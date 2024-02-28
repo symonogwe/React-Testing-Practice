@@ -1,7 +1,5 @@
-import { it, expect, describe } from "vitest";
 import Greet from "../../src/components/Greet";
 import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom/vitest";
 
 describe("Greet", () => {
   it("Should render heading when the name is not provided", () => {
