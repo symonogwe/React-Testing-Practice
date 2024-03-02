@@ -1,4 +1,10 @@
 import "@testing-library/jest-dom/vitest";
+import { server } from "./mocks/server";
+
+// Set up the server for mocking requests
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
 // Mock the ResizeObserver
 const ResizeObserverMock = vi.fn(() => ({
