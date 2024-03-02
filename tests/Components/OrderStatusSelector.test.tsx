@@ -16,6 +16,8 @@ describe("OrderStatusSelector", () => {
     return {
       trigger: screen.getByRole("combobox"),
       getOptions: () => screen.findAllByRole("option"),
+      user: userEvent.setup(),
+      onChange,
     };
   };
 
@@ -26,9 +28,7 @@ describe("OrderStatusSelector", () => {
   });
 
   it("Should display other options when button is clicked", async () => {
-    const user = userEvent.setup();
-
-    const { trigger, getOptions } = renderComponent();
+    const { trigger, user, getOptions } = renderComponent();
 
     await user.click(trigger);
 
@@ -37,5 +37,42 @@ describe("OrderStatusSelector", () => {
 
     const labels = options.map((option) => option.textContent);
     expect(labels).toStrictEqual(["New", "Processed", "Fulfilled"]);
+  });
+
+  it("Should call the callBack with the processed option", async () => {
+    const { trigger, user, onChange } = renderComponent();
+
+    await user.click(trigger);
+
+    const processedOption = screen.getByRole("option", { name: /processed/i });
+    await user.click(processedOption);
+
+    expect(onChange).toHaveBeenCalledWith("processed");
+  });
+
+  it("Should call the callBack with the fulfilled option", async () => {
+    const { trigger, user, onChange } = renderComponent();
+
+    await user.click(trigger);
+
+    const fulfilledOption = screen.getByRole("option", { name: /fulfilled/i });
+    await user.click(fulfilledOption);
+
+    expect(onChange).toHaveBeenCalledWith("fulfilled");
+  });
+
+  it("Should call the callBack with the new option", async () => {
+    const { trigger, user, onChange } = renderComponent();
+
+    await user.click(trigger);
+
+    const fulfilledOption = screen.getByRole("option", { name: /fulfilled/i });
+    await user.click(fulfilledOption);
+
+    await user.click(trigger);
+    const newOption = screen.getByRole("option", { name: /new/i });
+    await user.click(newOption);
+
+    expect(onChange).toHaveBeenCalledWith("new");
   });
 });
